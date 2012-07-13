@@ -19,6 +19,8 @@
  */
 package com.sap.prd.mobile.ios.mios;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
@@ -27,8 +29,6 @@ import java.util.regex.Pattern;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
-
-import junit.framework.Assert;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
@@ -87,7 +87,7 @@ public class AppIDUpdateTest extends XCodeTest
     PListAccessor plist = new PListAccessor(new File(new File(projectDirectoryApplication, "src/xcode"),
           "MyApp-Info.plist"));
 
-    Assert.assertEquals("com.sap.tip.production.inhouse.epdist.internal",
+    assertEquals("com.sap.tip.production.inhouse.epdist.internal",
           plist.getStringValue("CFBundleIdentifier"));
   }
 
@@ -112,10 +112,12 @@ public class AppIDUpdateTest extends XCodeTest
       String msgPattern = "The Xcode project refers to the Info\\.plist file .* that does not exist.";
       Pattern pattern = Pattern.compile(msgPattern, Pattern.CASE_INSENSITIVE);
       Matcher matcher = pattern.matcher(ex.getMessage());
-      Assert.assertTrue(
+      assertTrue(
             "Wrong exception message. Expected the pattern '" + msgPattern + "' but was " + ex.getMessage(),
             matcher.find());
+      return;
     }
+    fail("No MojoExecutionException thrown");
   }
 
   private BuildConfiguration getBuildConfig(File xCodeProjectFile, String buildConfigName) throws IOException,
