@@ -7,10 +7,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="Date-Creation-yyyymmdd" content="20130627" />
     <meta name="Date-Revision-yyyymmdd" content="20130709" />
     <meta http-equiv="Content-Language" content="en" />
-    <title>Xcode Maven Plugin - 
-Xcode Libraries Artifacts Structure</title>
+    <title>Xcode Maven Plugin - Usage</title>
     <link rel="stylesheet" href="../css/apache-maven-fluido-1.3.0.min.css" />
     <link rel="stylesheet" href="../css/site.css" />
     <link rel="stylesheet" href="../css/print.css" media="print" />
@@ -144,7 +144,7 @@ Xcode Libraries Artifacts Structure</title>
             </li>
               </ul>
         </li>
-                                                                                                                              
+                                                                                                                    
       <li>
     
                           <a href="../examples/LibBuildExample.html" title="Libraries">
@@ -173,10 +173,12 @@ Xcode Libraries Artifacts Structure</title>
         Generation of API Docs with Doxygen</a>
             </li>
                       
-      <li class="active">
+      <li>
     
-            <a href="#"><i class="none"></i>Xcode Libraries Artifacts Structure</a>
-          </li>
+                          <a href="../userguide/Xcode Libraries Artifacts Structure.html" title="Xcode Libraries Artifacts Structure">
+          <i class="none"></i>
+        Xcode Libraries Artifacts Structure</a>
+            </li>
               </ul>
         </li>
                   
@@ -260,12 +262,10 @@ Xcode Libraries Artifacts Structure</title>
         How to handle Keychains in a master/slave environment</a>
             </li>
                   
-      <li>
+      <li class="active">
     
-                          <a href="../howto/BuildAggregatedFrameworks.html" title="How to build aggregated frameworks">
-          <i class="none"></i>
-        How to build aggregated frameworks</a>
-            </li>
+            <a href="#"><i class="none"></i>How to build aggregated frameworks</a>
+          </li>
                               <li class="nav-header">Project Documentation</li>
                                                                                                                                                           
       <li>
@@ -314,219 +314,7 @@ Xcode Libraries Artifacts Structure</title>
                         
         <div id="bodyColumn"  class="span10" >
                                   
-            <!-- #%L
-  Xcode Maven Plugin
-  %%
-  Copyright (C) 2012 SAP AG
-  %%
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-  
-       http://www.apache.org/licenses/LICENSE-2.0
-  
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-  #L% -->
-
-
-
-
-
-	<h1>Introduction</h1>
-
-	<p>This page describes all the artifacts, produced out of a build
-		of Xcode library project with the xcode-maven-plugin.</p>
-
-	<h1>Mandatory Artifacts</h1>
-
-	<div class="section"><div class="section"><h3>Pom File<a name="Pom_File"></a></h3>
-	<blockquote>
-		<p>&lt;artifact-id&gt;-&lt;version&gt;.pom</p>
-	</blockquote>
-
-	<p>
-		The project pom file as defined in the project. More information in <a href="Project Pom.html" title="Project Pom">Project Pom</a>.
-	</p>
-
-	</div><div class="section"><h3>Versions Information<a name="Versions_Information"></a></h3>
-	<blockquote>
-		<p>&lt;artifact-id&gt;-&lt;version&gt;-versions.xml</p>
-	</blockquote>
-
-	<p>
-		The file containing the reproducibility information of the project
-		built and its (transitive) dependencies. More information in <a href="Version information.html" title="Version information">Version
-			information</a>.
-	</p>
-
-	</div><div class="section"><h3>
-		Main Artifact
-		<blockquote>
-			<p>&lt;artifact-id&gt;-&lt;version&gt;.tar</p>
-		</blockquote>
-	<a name="Main_Artifactartifact-id-version.tar"></a></h3>
-
-	<p>
-		The main artifact is a tar file, which may contain additonal
-		information about the deployed artifacts.<br /> By default the main
-		artifact contains only a
-		<tt>README.txt</tt>
-		.
-	</p>
-
-	<p>In case the built library exposes additional bundle resources,
-		the main artifact must contain a &quot;bundles.txt&quot; file. The bundles.txt
-		file must contain for each exposed bundle resource the following
-		information:</p>
-	<blockquote>
-		<p>
-			&lt;group-id&gt;:&lt;artifact-id&gt;:type:classifier1:&lt;version&gt;<br />
-			&lt;group-id&gt;:&lt;artifact-id&gt;:type:classifier2:&lt;version&gt;<br />
-			...
-		</p>
-	</blockquote>
-
-	</div><div class="section"><h3>
-		Library Archive(s)
-		<blockquote>
-			<p>&lt;artifact-id&gt;-&lt;version&gt;-&lt;classifier&gt;.a</p>
-		</blockquote>
-	<a name="Library_Archivesartifact-id-version-classifier.a"></a></h3>
-
-	<p>The library archive(s) as built from Xcode.</p>
-
-	<p>The default built configurations and sdks/platforms for library
-		projects are Release/Debug and iphoneos/iphonesimulator, i.e. by
-		default you see the following artifacts:</p>
-	<blockquote>
-		<p>
-			&lt;artifact-id&gt;-&lt;version&gt;-Release-iphoneos.a<br />
-			&lt;artifact-id&gt;-&lt;version&gt;-Debug-iphoneos.a
-		</p>
-
-		<p>
-			&lt;artifact-id&gt;-&lt;version&gt;-Release-iphonesimulator.a<br />
-			&lt;artifact-id&gt;-&lt;version&gt;-Debug-iphonesimulator.a
-		</p>
-	</blockquote>
-
-	<h1>Additional Artifacts</h1>
-
-	</div><div class="section"><h3>Public Headers<a name="Public_Headers"></a></h3>
-	<blockquote>
-		<p>&lt;artifact-id&gt;-&lt;version&gt;-&lt;classifier&gt;.headers.tar</p>
-	</blockquote>
-
-	<p>The header files exposed as public headers into Copy Headers
-		&gt; Public Build Phase into Xcode.</p>
-
-	<p>The default built configurations and sdks/platforms for library
-		projects are Release/Debug and iphoneos/iphonesimulator, i.e. if the
-		library exposes public headers, by default you see the following
-		artifacts:</p>
-	<blockquote>
-		<p>
-			&lt;artifact-id&gt;-&lt;version&gt;-Release-iphoneos.headers.tar<br />
-			&lt;artifact-id&gt;-&lt;version&gt;-Debug-iphoneos.headers.tar
-		</p>
-
-		<p>
-			&lt;artifact-id&gt;-&lt;version&gt;-Release-iphonesimulator.headers.tar<br />
-			&lt;artifact-id&gt;-&lt;version&gt;-Debug-iphonesimulator.headers.tar
-		</p>
-	</blockquote>
-
-
-	</div><div class="section"><h3>Fat Binaries<a name="Fat_Binaries"></a></h3>
-
-	<blockquote>
-		<p>&lt;artifact-id&gt;-&lt;version&gt;-&lt;classifier&gt;-&lt;type&gt;.a</p>
-	</blockquote>
-
-	<p>
-		Fat binaries (combined iphoneos and iphonesimulator binaries) built
-		with the
-		<tt>lipo</tt>
-		tool.
-	</p>
-
-	<p>
-		The
-		<tt>&lt;type&gt;</tt>
-		for these artifacts is set to
-		<tt>fat-binary</tt>
-		<br /> The default built configurations and sdks/platforms for
-		library projects are Release/Debug and iphoneos/iphonesimulator, i.e.
-		if the building of fat binaries is enabled for the project, you see
-		the following artifacts:
-	</p>
-	<blockquote>
-		<p>
-			&lt;artifact-id&gt;-&lt;version&gt;-Debug-fat-binary.a<br />
-			&lt;artifact-id&gt;-&lt;version&gt;-Release-fat-binary.a
-		</p>
-	</blockquote>
-
-	<p>
-		More information how to enable fat binary generation in <a href="Fat Binaries.html" title="Fat Binaries">Generate
-			Fat Binaries</a>
-	</p>
-
-	</div><div class="section"><h3>Doxygen Documentation<a name="Doxygen_Documentation"></a></h3>
-	<blockquote>
-		<p>&lt;artifact-id&gt;-&lt;version&gt;-&lt;type&gt;.zip</p>
-	</blockquote>
-
-	<p>The zipped output of the generation of Doxygen documentation.</p>
-
-	<p>
-		The
-		<tt>&lt;type&gt;</tt>
-		is set to
-		<tt>DoxygenApiDoc</tt>
-		.
-	</p>
-
-	<p>
-		More information how to enable generation of Doxygen Documentation in
-		<a href="Generation of API Docs with Doxygen.html" title="Generation of API Docs with Doxygen">Generation of API
-			Docs with Doxygen</a>.
-	</p>
-
-	</div><div class="section"><h3>Bundle Resources<a name="Bundle_Resources"></a></h3>
-
-	<blockquote>
-		<p>&lt;artifact-id&gt;-&lt;version&gt;-&lt;classifier&gt;.xcode-bundle-zip</p>
-	</blockquote>
-
-	<p>
-		The zipped exposed bundle resources out of a library project as
-		defined into the &quot;Copy Bundle resources&quot; Build Phase into Xcode.<br />
-		The classifier is the escaped bundle name (the bundle name where the
-		file separators are replaced with ~).
-	</p>
-
-	<p>
-		If a library project defines a bundle resource with the same name as
-		the library itself, this bundle is treated as &quot;default bundle&quot;.<br />
-		In this case the classifier has the same name as the
-		<tt>artifact-id</tt>
-		.
-	</p>
-	<blockquote>
-		<p>&lt;artifact-id&gt;-&lt;version&gt;-&lt;artifact-id&gt;.xcode-bundle-zip</p>
-	</blockquote>
-
-	<p>
-		More information about generation and consume of bundles in <a href="Generation and Consumption Libraries with Bundles.html" title="Generation and Consumption Libraries with Bundles">Generation
-			and Consumption Libraries with Bundles</a>
-	</p>
-</div></div>
-
+            <!-- ~ --><!-- #%L --><!-- xcode-maven-plugin --><!-- %% --><!-- Copyright (C) 2013 SAP AG --><!-- %% --><!-- Licensed under the Apache License, Version 2.0 (the "License"); --><!-- you may not use this file except in compliance with the License. --><!-- You may obtain a copy of the License at --><!--  --><!-- http://www.apache.org/licenses/LICENSE-2.0 --><!--  --><!-- Unless required by applicable law or agreed to in writing, software --><!-- distributed under the License is distributed on an "AS IS" BASIS, --><!-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. --><!-- See the License for the specific language governing permissions and --><!-- limitations under the License. --><!-- #L% --><!-- ~ --><div class="section"><h2>How to build frameworks aggregating multiple other libraries or frameworks<a name="How_to_build_frameworks_aggregating_multiple_other_libraries_or_frameworks"></a></h2><div class="section"><h3>Purpose of this page<a name="Purpose_of_this_page"></a></h3><p>This page explains how frameworks representing aggregations from multiple libraries or frameworks can be built with the xcode-maven-plugin.</p></div><div class="section"><h3>Motivation <a name="Motivation"></a></h3><p>If you are a library or a framework provider and you have separated your code into multiple project, it may happen that your consumers have to deal with separate multiple libraries or frameworks. To facilitate this consumption, you could provide an aggregated framework, combining the commonly used together separate libraries or frameworks.</p></div><div class="section"><h3>Step-by-step Guide<a name="Step-by-step_Guide"></a></h3><ul><li>Create Xcode Framework Project. See <a href="../examples/FmwkBuildExample.html">Building a Static Xcode Framework</a> for detailed information concerning this step.</li><li>Create a dummy header and an implementation file.</li><li>Create the project pom and declare as dependencies the frameworks and/or libraries you want to aggregate. See the <a href="../userguide/Project Structure.html">Project Structure</a> and <a href="../userguide/Project Pom.html">Project Pom</a> for detailed information concerning these steps.</li><li>Call <tt>mvn initialize</tt> to get the dependent projects locally.</li><li>Link all binaries you want to aggregate - add the binaries into &quot;Link Binary with Libraries&quot; Build Phases. Make sure the binaries are linked as &quot;Required&quot; (which is the default option).</li><li>Expose all headers from the dependent libraries or frameworks also as &quot;Public&quot; - drag and drop all public headers from the dependent frameworks and libraries into &quot;Copy Headers&quot; Build Phases.</li><li>Expose all bundle resources if there are some - drag and drop the bundle resources from the dependent frameworks and libraries into &quot;Copy Bundle Resources&quot; Build Phases.</li><li>Call <tt>mvn install</tt> to finally build the aggregated framework.</li></ul></div></div>
                   </div>
             </div>
           </div>

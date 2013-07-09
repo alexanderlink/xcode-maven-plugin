@@ -7,10 +7,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="Date-Creation-yyyymmdd" content="201230620" />
     <meta name="Date-Revision-yyyymmdd" content="20130709" />
     <meta http-equiv="Content-Language" content="en" />
-    <title>Xcode Maven Plugin - 
-Xcode Libraries Artifacts Structure</title>
+    <title>Xcode Maven Plugin - Usage</title>
     <link rel="stylesheet" href="../css/apache-maven-fluido-1.3.0.min.css" />
     <link rel="stylesheet" href="../css/site.css" />
     <link rel="stylesheet" href="../css/print.css" media="print" />
@@ -144,7 +144,7 @@ Xcode Libraries Artifacts Structure</title>
             </li>
               </ul>
         </li>
-                                                                                                                              
+                                                                                                                    
       <li>
     
                           <a href="../examples/LibBuildExample.html" title="Libraries">
@@ -173,10 +173,12 @@ Xcode Libraries Artifacts Structure</title>
         Generation of API Docs with Doxygen</a>
             </li>
                       
-      <li class="active">
+      <li>
     
-            <a href="#"><i class="none"></i>Xcode Libraries Artifacts Structure</a>
-          </li>
+                          <a href="../userguide/Xcode Libraries Artifacts Structure.html" title="Xcode Libraries Artifacts Structure">
+          <i class="none"></i>
+        Xcode Libraries Artifacts Structure</a>
+            </li>
               </ul>
         </li>
                   
@@ -253,12 +255,10 @@ Xcode Libraries Artifacts Structure</title>
         How to enable Over-The-Air Deployment</a>
             </li>
                   
-      <li>
+      <li class="active">
     
-                          <a href="../howto/HandlingKeychainsInMasterSlaveEnvironment.html" title="How to handle Keychains in a master/slave environment">
-          <i class="none"></i>
-        How to handle Keychains in a master/slave environment</a>
-            </li>
+            <a href="#"><i class="none"></i>How to handle Keychains in a master/slave environment</a>
+          </li>
                   
       <li>
     
@@ -314,219 +314,26 @@ Xcode Libraries Artifacts Structure</title>
                         
         <div id="bodyColumn"  class="span10" >
                                   
-            <!-- #%L
-  Xcode Maven Plugin
-  %%
-  Copyright (C) 2012 SAP AG
-  %%
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-  
-       http://www.apache.org/licenses/LICENSE-2.0
-  
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-  #L% -->
+            <!-- ~ --><!-- #%L --><!-- xcode-maven-plugin --><!-- %% --><!-- Copyright (C) 2012 SAP AG --><!-- %% --><!-- Licensed under the Apache License, Version 2.0 (the "License"); --><!-- you may not use this file except in compliance with the License. --><!-- You may obtain a copy of the License at --><!--  --><!-- http://www.apache.org/licenses/LICENSE-2.0 --><!--  --><!-- Unless required by applicable law or agreed to in writing, software --><!-- distributed under the License is distributed on an "AS IS" BASIS, --><!-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. --><!-- See the License for the specific language governing permissions and --><!-- limitations under the License. --><!-- #L% --><!-- ~ --><div class="section"><h2>How to handle keychains in master/slave environments<a name="How_to_handle_keychains_in_masterslave_environments"></a></h2><div class="section"><h3>Purpose of this page<a name="Purpose_of_this_page"></a></h3><p>In order to be able to sign Xcode applications it is required to access the certificates for signing. These certificates are stored inside a keychain. The keychain must be open in order to retrieve the certificate for the built application. Typically the xcode-maven-plugin will be used on a continuous-integration infrastructure like e.g. Hudson or Jenkins. As long as the continuous-integration infrastructure is operated in a single node mode it is sufficient to put the certificate into the login keychain of the user that runs the continuous-integration server. The situation becomes difficult when operating continuous-integration servers in the master/slave mode. The preferred way to establish the communication between the master and the slave is ssh. Unfortunatally the keychains are not accessible by default when connecting to a machine using ssh. This page explains how applications can be signed on slaves using the xcode-maven-plugin in a master/slave setup. As already explaind above the challange is to get access to the keychain containing the certificate required for the codesiging.</p><p>The steps mentions below refer to Hudson/Jenkins as a build server.</p></div><div class="section"><h3>How applications can be signed using the xcode-maven-plugin in a master/slave environment<a name="How_applications_can_be_signed_using_the_xcode-maven-plugin_in_a_masterslave_environment"></a></h3><div class="section"><h4>The Problem<a name="The_Problem"></a></h4><p>When a slave is started we end up from the technical point of view in a call like </p><div class="source"><pre class="prettyprint">   [SSH] Opening SSH connection to &lt;SLAVE&gt;:22.
+   [SSH] Authenticating as &lt;USER_NAME&gt;/******.
+   [SSH] Authentication successful.
+   ...
+   [SSH] Starting slave process: cd '&lt;REMOTE_FS_ROOT&gt;' &amp;&amp; java -jar slave.jar</pre></div><p>When logging on via SSH the login keychain is not open - even if the same user is logged in with a graphical session on the target machine. In this case triggering an Xcode build for an application leads to:</p><div class="source"><pre class="prettyprint">    /usr/bin/codesign --force --sign &lt;IDENTITY&gt; --resource-rules=&lt;RESOURCE_RULES&gt; --entitlements &lt;ENTITLEMENTS&gt; &lt;PATH_TO_APP&gt;
+    &lt;PATH_TO_APP&gt;: User interaction is not allowed.
 
+   Command /usr/bin/codesign failed with exit code 1</pre></div><p>Codesign tries to ask for the keychain password in a modal dialog. This attempt fails since there is no graphical session. This is why we get the &quot;User interaction is not allowed.&quot; error message.</p></div><div class="section"><h4>The Solution<a name="The_Solution"></a></h4><p>The preferred way to open the keychain is during startup of the slave process. But so far there is no known way to open the keychain when the slave process is launched.</p><p>The second best way to open the keychain is to unlock it inside the Hudson/Jenkins job. The example code for opening a keychain looks like:</p><div class="source"><pre class="prettyprint">   #!/bin/bash
 
+   ...
 
+   keychain=&lt;PATH_TO_KEYCHAIN_FILE&gt; # e.g. $HOME/Library/Keychains/login.keychain
+   security unlock-keychain -p &quot;&lt;PASSWORD&gt;&quot; ${keychain} &amp;&gt;/dev/null
+   
+   if [ $? -ne 0 ];then
+     echo &quot;Cannot open keychain ${keychain}&quot;
+     exit 1
+   fi
 
-
-	<h1>Introduction</h1>
-
-	<p>This page describes all the artifacts, produced out of a build
-		of Xcode library project with the xcode-maven-plugin.</p>
-
-	<h1>Mandatory Artifacts</h1>
-
-	<div class="section"><div class="section"><h3>Pom File<a name="Pom_File"></a></h3>
-	<blockquote>
-		<p>&lt;artifact-id&gt;-&lt;version&gt;.pom</p>
-	</blockquote>
-
-	<p>
-		The project pom file as defined in the project. More information in <a href="Project Pom.html" title="Project Pom">Project Pom</a>.
-	</p>
-
-	</div><div class="section"><h3>Versions Information<a name="Versions_Information"></a></h3>
-	<blockquote>
-		<p>&lt;artifact-id&gt;-&lt;version&gt;-versions.xml</p>
-	</blockquote>
-
-	<p>
-		The file containing the reproducibility information of the project
-		built and its (transitive) dependencies. More information in <a href="Version information.html" title="Version information">Version
-			information</a>.
-	</p>
-
-	</div><div class="section"><h3>
-		Main Artifact
-		<blockquote>
-			<p>&lt;artifact-id&gt;-&lt;version&gt;.tar</p>
-		</blockquote>
-	<a name="Main_Artifactartifact-id-version.tar"></a></h3>
-
-	<p>
-		The main artifact is a tar file, which may contain additonal
-		information about the deployed artifacts.<br /> By default the main
-		artifact contains only a
-		<tt>README.txt</tt>
-		.
-	</p>
-
-	<p>In case the built library exposes additional bundle resources,
-		the main artifact must contain a &quot;bundles.txt&quot; file. The bundles.txt
-		file must contain for each exposed bundle resource the following
-		information:</p>
-	<blockquote>
-		<p>
-			&lt;group-id&gt;:&lt;artifact-id&gt;:type:classifier1:&lt;version&gt;<br />
-			&lt;group-id&gt;:&lt;artifact-id&gt;:type:classifier2:&lt;version&gt;<br />
-			...
-		</p>
-	</blockquote>
-
-	</div><div class="section"><h3>
-		Library Archive(s)
-		<blockquote>
-			<p>&lt;artifact-id&gt;-&lt;version&gt;-&lt;classifier&gt;.a</p>
-		</blockquote>
-	<a name="Library_Archivesartifact-id-version-classifier.a"></a></h3>
-
-	<p>The library archive(s) as built from Xcode.</p>
-
-	<p>The default built configurations and sdks/platforms for library
-		projects are Release/Debug and iphoneos/iphonesimulator, i.e. by
-		default you see the following artifacts:</p>
-	<blockquote>
-		<p>
-			&lt;artifact-id&gt;-&lt;version&gt;-Release-iphoneos.a<br />
-			&lt;artifact-id&gt;-&lt;version&gt;-Debug-iphoneos.a
-		</p>
-
-		<p>
-			&lt;artifact-id&gt;-&lt;version&gt;-Release-iphonesimulator.a<br />
-			&lt;artifact-id&gt;-&lt;version&gt;-Debug-iphonesimulator.a
-		</p>
-	</blockquote>
-
-	<h1>Additional Artifacts</h1>
-
-	</div><div class="section"><h3>Public Headers<a name="Public_Headers"></a></h3>
-	<blockquote>
-		<p>&lt;artifact-id&gt;-&lt;version&gt;-&lt;classifier&gt;.headers.tar</p>
-	</blockquote>
-
-	<p>The header files exposed as public headers into Copy Headers
-		&gt; Public Build Phase into Xcode.</p>
-
-	<p>The default built configurations and sdks/platforms for library
-		projects are Release/Debug and iphoneos/iphonesimulator, i.e. if the
-		library exposes public headers, by default you see the following
-		artifacts:</p>
-	<blockquote>
-		<p>
-			&lt;artifact-id&gt;-&lt;version&gt;-Release-iphoneos.headers.tar<br />
-			&lt;artifact-id&gt;-&lt;version&gt;-Debug-iphoneos.headers.tar
-		</p>
-
-		<p>
-			&lt;artifact-id&gt;-&lt;version&gt;-Release-iphonesimulator.headers.tar<br />
-			&lt;artifact-id&gt;-&lt;version&gt;-Debug-iphonesimulator.headers.tar
-		</p>
-	</blockquote>
-
-
-	</div><div class="section"><h3>Fat Binaries<a name="Fat_Binaries"></a></h3>
-
-	<blockquote>
-		<p>&lt;artifact-id&gt;-&lt;version&gt;-&lt;classifier&gt;-&lt;type&gt;.a</p>
-	</blockquote>
-
-	<p>
-		Fat binaries (combined iphoneos and iphonesimulator binaries) built
-		with the
-		<tt>lipo</tt>
-		tool.
-	</p>
-
-	<p>
-		The
-		<tt>&lt;type&gt;</tt>
-		for these artifacts is set to
-		<tt>fat-binary</tt>
-		<br /> The default built configurations and sdks/platforms for
-		library projects are Release/Debug and iphoneos/iphonesimulator, i.e.
-		if the building of fat binaries is enabled for the project, you see
-		the following artifacts:
-	</p>
-	<blockquote>
-		<p>
-			&lt;artifact-id&gt;-&lt;version&gt;-Debug-fat-binary.a<br />
-			&lt;artifact-id&gt;-&lt;version&gt;-Release-fat-binary.a
-		</p>
-	</blockquote>
-
-	<p>
-		More information how to enable fat binary generation in <a href="Fat Binaries.html" title="Fat Binaries">Generate
-			Fat Binaries</a>
-	</p>
-
-	</div><div class="section"><h3>Doxygen Documentation<a name="Doxygen_Documentation"></a></h3>
-	<blockquote>
-		<p>&lt;artifact-id&gt;-&lt;version&gt;-&lt;type&gt;.zip</p>
-	</blockquote>
-
-	<p>The zipped output of the generation of Doxygen documentation.</p>
-
-	<p>
-		The
-		<tt>&lt;type&gt;</tt>
-		is set to
-		<tt>DoxygenApiDoc</tt>
-		.
-	</p>
-
-	<p>
-		More information how to enable generation of Doxygen Documentation in
-		<a href="Generation of API Docs with Doxygen.html" title="Generation of API Docs with Doxygen">Generation of API
-			Docs with Doxygen</a>.
-	</p>
-
-	</div><div class="section"><h3>Bundle Resources<a name="Bundle_Resources"></a></h3>
-
-	<blockquote>
-		<p>&lt;artifact-id&gt;-&lt;version&gt;-&lt;classifier&gt;.xcode-bundle-zip</p>
-	</blockquote>
-
-	<p>
-		The zipped exposed bundle resources out of a library project as
-		defined into the &quot;Copy Bundle resources&quot; Build Phase into Xcode.<br />
-		The classifier is the escaped bundle name (the bundle name where the
-		file separators are replaced with ~).
-	</p>
-
-	<p>
-		If a library project defines a bundle resource with the same name as
-		the library itself, this bundle is treated as &quot;default bundle&quot;.<br />
-		In this case the classifier has the same name as the
-		<tt>artifact-id</tt>
-		.
-	</p>
-	<blockquote>
-		<p>&lt;artifact-id&gt;-&lt;version&gt;-&lt;artifact-id&gt;.xcode-bundle-zip</p>
-	</blockquote>
-
-	<p>
-		More information about generation and consume of bundles in <a href="Generation and Consumption Libraries with Bundles.html" title="Generation and Consumption Libraries with Bundles">Generation
-			and Consumption Libraries with Bundles</a>
-	</p>
-</div></div>
-
+   ...    </pre></div><ul><li>Setup a freestyle job.</li><li>Add a build step &quot;execute shell&quot;</li><li>Put the code snippet above into that shell together with the subsequent maven call (provide the keychain and the password. Path to the keychain file must be absolute).</li></ul></div></div><div class="section"><h3>Security Advices<a name="Security_Advices"></a></h3><p>In order to secure the password contained as plain text in the shell perform the following steps</p><ul><li>the umask should be set to 0077. This ensures that all files are created with access right 700. This ensures that config.xml files that contain the password in plain text cannot be accessed by other users.</li><li>#!/bin/bash <b>-x</b> must not be used. When the -x flag is used the commands are prompted into the log.</li><li>any output of the security call should be redirected to /dev/null</li><li>set the HISTSIZE to 0. (e.g. export HISTSIZE=0 inside ~/.bashrc). This prevents the password to be contained in the history.</li><li>Use Hudson/Jenkins security. Restrict the access rights in a way that the job configuration can only be read by authorized users.</li><li>Hudson/Jenkins should run under a dedicated user.</li></ul></div><div class="section"><h3>Tipps and Tricks<a name="Tipps_and_Tricks"></a></h3><ul><li>By default keychains are locked after a timeout interval. In long running builds it might happen that the keychain is closed again before the code sign step happens. The keychain will remain open infinitly after the command <tt>security set-keychain-settings &lt;PATH_TO_KEYCHAIN_FILE&gt; </tt>. It is sufficient to execute this command once in a shell since the timeout is a property of the keychain. It is not required to put this command into the maven build jobs in order to get it executed during each and every build.</li></ul></div></div>
                   </div>
             </div>
           </div>

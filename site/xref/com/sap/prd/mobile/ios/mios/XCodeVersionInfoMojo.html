@@ -280,7 +280,7 @@
 <a class="jxr_linenumber" name="270" href="#270">270</a> 
 <a class="jxr_linenumber" name="271" href="#271">271</a>       <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="272" href="#272">272</a>         org.sonatype.aether.artifact.Artifact sideArtifact = <strong class="jxr_keyword">new</strong> <a href="../../../../../../com/sap/prd/mobile/ios/mios/XCodeDownloadManager.html">XCodeDownloadManager</a>(projectRepos, repoSystem,
-<a class="jxr_linenumber" name="273" href="#273">273</a>               repoSession).resolveSideArtifact(mainArtifact, <span class="jxr_string">"versions"</span>, <span class="jxr_string">"xml"</span>);
+<a class="jxr_linenumber" name="273" href="#273">273</a>               repoSession, getLog()).resolveSideArtifact(mainArtifact, <span class="jxr_string">"versions"</span>, <span class="jxr_string">"xml"</span>);
 <a class="jxr_linenumber" name="274" href="#274">274</a>         getLog().info(<span class="jxr_string">"Version information retrieved for artifact: "</span> + mainArtifact);
 <a class="jxr_linenumber" name="275" href="#275">275</a> 
 <a class="jxr_linenumber" name="276" href="#276">276</a>         result.add(VersionInfoXmlManager.parseDependency(sideArtifact.getFile()));
