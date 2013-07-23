@@ -136,27 +136,25 @@
 <a class="jxr_linenumber" name="126" href="#126">126</a>   {
 <a class="jxr_linenumber" name="127" href="#127">127</a>     <strong class="jxr_keyword">final</strong> String generateDSym = EffectiveBuildSettings.getBuildSetting(
 <a class="jxr_linenumber" name="128" href="#128">128</a>           getXCodeContext(XCodeContext.SourceCodeLocation.WORKING_COPY,
-<a class="jxr_linenumber" name="129" href="#129">129</a>                 config, sdk), getLog(),
-<a class="jxr_linenumber" name="130" href="#130">130</a>           EffectiveBuildSettings.GCC_GENERATE_DEBUGGING_SYMBOLS);
-<a class="jxr_linenumber" name="131" href="#131">131</a> 
-<a class="jxr_linenumber" name="132" href="#132">132</a>     <strong class="jxr_keyword">final</strong> String debugFormat = EffectiveBuildSettings.getBuildSetting(
-<a class="jxr_linenumber" name="133" href="#133">133</a>           getXCodeContext(XCodeContext.SourceCodeLocation.WORKING_COPY,
-<a class="jxr_linenumber" name="134" href="#134">134</a>                 config, sdk), getLog(),
-<a class="jxr_linenumber" name="135" href="#135">135</a>           EffectiveBuildSettings.DEBUG_INFORMATION_FORMAT);
-<a class="jxr_linenumber" name="136" href="#136">136</a> 
-<a class="jxr_linenumber" name="137" href="#137">137</a>     <strong class="jxr_keyword">return</strong> (generateDSym == <strong class="jxr_keyword">null</strong> || generateDSym.equalsIgnoreCase(<span class="jxr_string">"YES"</span>)
-<a class="jxr_linenumber" name="138" href="#138">138</a>           &amp;&amp; (debugFormat != <strong class="jxr_keyword">null</strong> &amp;&amp; debugFormat
-<a class="jxr_linenumber" name="139" href="#139">139</a>             .equalsIgnoreCase(<span class="jxr_string">"dwarf-with-dsym"</span>)));
-<a class="jxr_linenumber" name="140" href="#140">140</a>   }
-<a class="jxr_linenumber" name="141" href="#141">141</a> 
-<a class="jxr_linenumber" name="142" href="#142">142</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> prepareDSymFileForDeployment(<strong class="jxr_keyword">final</strong> MavenProject mavenProject, <strong class="jxr_keyword">final</strong> String configuration,
-<a class="jxr_linenumber" name="143" href="#143">143</a>         <strong class="jxr_keyword">final</strong> String sdk, <strong class="jxr_keyword">final</strong> File dSymFile)
-<a class="jxr_linenumber" name="144" href="#144">144</a>   {
-<a class="jxr_linenumber" name="145" href="#145">145</a> 
-<a class="jxr_linenumber" name="146" href="#146">146</a>     projectHelper.attachArtifact(mavenProject, <span class="jxr_string">"zip"</span>, configuration + <span class="jxr_string">"-"</span> + sdk + <span class="jxr_string">"-app.dSYM"</span>, dSymFile);
-<a class="jxr_linenumber" name="147" href="#147">147</a>   }
-<a class="jxr_linenumber" name="148" href="#148">148</a> 
-<a class="jxr_linenumber" name="149" href="#149">149</a> }
+<a class="jxr_linenumber" name="129" href="#129">129</a>                 config, sdk), EffectiveBuildSettings.GCC_GENERATE_DEBUGGING_SYMBOLS);
+<a class="jxr_linenumber" name="130" href="#130">130</a> 
+<a class="jxr_linenumber" name="131" href="#131">131</a>     <strong class="jxr_keyword">final</strong> String debugFormat = EffectiveBuildSettings.getBuildSetting(
+<a class="jxr_linenumber" name="132" href="#132">132</a>           getXCodeContext(XCodeContext.SourceCodeLocation.WORKING_COPY,
+<a class="jxr_linenumber" name="133" href="#133">133</a>                 config, sdk), EffectiveBuildSettings.DEBUG_INFORMATION_FORMAT);
+<a class="jxr_linenumber" name="134" href="#134">134</a> 
+<a class="jxr_linenumber" name="135" href="#135">135</a>     <strong class="jxr_keyword">return</strong> (generateDSym == <strong class="jxr_keyword">null</strong> || generateDSym.equalsIgnoreCase(<span class="jxr_string">"YES"</span>)
+<a class="jxr_linenumber" name="136" href="#136">136</a>           &amp;&amp; (debugFormat != <strong class="jxr_keyword">null</strong> &amp;&amp; debugFormat
+<a class="jxr_linenumber" name="137" href="#137">137</a>             .equalsIgnoreCase(<span class="jxr_string">"dwarf-with-dsym"</span>)));
+<a class="jxr_linenumber" name="138" href="#138">138</a>   }
+<a class="jxr_linenumber" name="139" href="#139">139</a> 
+<a class="jxr_linenumber" name="140" href="#140">140</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> prepareDSymFileForDeployment(<strong class="jxr_keyword">final</strong> MavenProject mavenProject, <strong class="jxr_keyword">final</strong> String configuration,
+<a class="jxr_linenumber" name="141" href="#141">141</a>         <strong class="jxr_keyword">final</strong> String sdk, <strong class="jxr_keyword">final</strong> File dSymFile)
+<a class="jxr_linenumber" name="142" href="#142">142</a>   {
+<a class="jxr_linenumber" name="143" href="#143">143</a> 
+<a class="jxr_linenumber" name="144" href="#144">144</a>     projectHelper.attachArtifact(mavenProject, <span class="jxr_string">"zip"</span>, configuration + <span class="jxr_string">"-"</span> + sdk + <span class="jxr_string">"-app.dSYM"</span>, dSymFile);
+<a class="jxr_linenumber" name="145" href="#145">145</a>   }
+<a class="jxr_linenumber" name="146" href="#146">146</a> 
+<a class="jxr_linenumber" name="147" href="#147">147</a> }
 </pre>
 <hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
 </html>
